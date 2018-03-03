@@ -1,0 +1,45 @@
+#title {
+    width: 100%;
+    text-align: center;
+}
+
+.container {
+    width: 95%;
+    margin: auto;
+    max-width: 775px;
+}
+.content-block-title {
+    padding: 15px;
+    margin: auto;
+    margin-top: 30px;
+    font-size: larger;
+    background-color: #2196f3;
+    color: white;
+    border-top-left-radius:  5px;
+    border-top-right-radius: 5px;
+}
+
+#cardDetails {
+    margin: auto;
+    border-radius: 5px;
+}
+
+.card-content {
+    margin-left: 2%;
+} 
+.oddBtn {
+    border: 2px solid #fff;
+    border-radius: 25px;
+    text-align: center;
+    background-color: #2196f3;
+    color: #fff !important;
+    font-size: larger !important;
+}
+.evenBtn {
+    border: 2px solid #2196f3;
+    border-radius: 25px;
+    text-align: center;
+    background-color: #fff;
+    color: black !important;
+    font-size: larger !important;
+}
