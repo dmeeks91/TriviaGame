@@ -34,7 +34,15 @@ $(document).ready(function(){
                     {
                         clearInterval(game.clock.interval);
                         game.clock.running = false;
+                        game.score.timeX ++;
                         toastr['error']("TIME UP!");
+                        game.showScore();
+                        game.showAnsSummary(-1).then(
+                            function(show)
+                            {
+                                if(show) setTimeout(function(){game.nextQ();},3000);
+                            }
+                        );
                     }
                     
                 },  
@@ -119,29 +127,52 @@ $(document).ready(function(){
                     });
             },
             showAnsSummary: function(indx) {
-                var correct,
-                    slctd;
-                for(var i=0; i < this.ansOrder.length; i++)
-                {
-                    slctd = (indx === i);
-                    correct = (this.ansOrder[i] === 3);
-                    if (correct)
-                    {
-                        this.setAnsBtnColor(`#ans${i + 1}`,'correct');
-                    }
-                    else if (slctd)
-                    {
-                        this.setAnsBtnColor(`#ans${indx + 1}`,'incorrect');
-                    }
-                    else
-                    {
-                        this.setAnsBtnColor(`#ans${i + 1}`,'unselected');
-                    }
-                }
+                var self = this;
+                return new Promise(
+                    function(resolve, reject) {
+                        try
+                        {
+                            var correct,
+                                slctd;
+                            for(var i=0; i < self.ansOrder.length; i++)
+                            {
+                                slctd = (indx === i);
+                                correct = (self.ansOrder[i] === 3);
+                                if (correct)
+                                {
+                                    self.setAnsBtnColor(`#ans${i + 1}`,'correct');
+                                }
+                                else if (slctd)
+                                {
+                                    self.setAnsBtnColor(`#ans${indx + 1}`,'incorrect');
+                                }
+                                else
+                                {
+                                    self.setAnsBtnColor(`#ans${i + 1}`,'unselected');
+                                }
+                            }
+                            resolve(true);
+                        }
+                        catch(e)
+                        {
+                            reject(false);
+                        }
+                    })                
             },
             setQDisplay: function(qObj, ansOrd) {
                 $('#qHolder').html(qObj.question);
-                $('#qSum').html(`Question ${this.qIndx + 1} of ${this.qBank.length}   Category: ${qObj.category}`);
+                $('#qSum').html(`<div class="row">
+                                    <div class = "left">
+                                        <b>Question:</b> ${this.qIndx + 1} of ${this.qBank.length} 
+                                    </div>
+                                    <div class = "center">
+                                        <b>Category:</b> ${qObj.category}
+                                    </div>
+                                    <div class = "right">
+                                        <b>Difficulty:</b> ${qObj.difficulty} 
+                                    </div>                                    
+                                </div>`);
+                                    
                 var abc = ['A','B','C','D'],
                     wrgLen = qObj.incorrect_answers.length,
                     ansId,
@@ -200,7 +231,6 @@ $(document).ready(function(){
                         }                        
                     });
             },
-               
         };
 
         toastr.options = {
@@ -221,9 +251,9 @@ $(document).ready(function(){
             "hideMethod": "fadeOut"
           };
 
-    var qSelect = app.smartSelect.create({
+    var ctgSelect = app.smartSelect.create({
         closeOnSelect: true,
-        el: '#qCount',
+        el: '#ctgSelect',
         on: {
             // If there is an onInit event use it to set the Initial values... look at .emit for a custom event
           close: function (e) {
@@ -239,22 +269,64 @@ $(document).ready(function(){
           },        
         }
       });
+
+    var qSelect = app.smartSelect.create({
+        closeOnSelect: true,
+        el: '#qSelect',
+        on: {
+            // If there is an onInit event use it to set the Initial values... look at .emit for a custom event
+            startUp: function(data) {
+                console.log(data);
+            },
+            close: function (e) {
+            //For some reason the selected value wasn't showing after the initial close.             
+            if (e.valueEl.innerText === '')
+            {
+                e.valueEl.innerText = "5";
+            }
+            if ($('#btnStart').hasClass('disabled'))
+            {
+                $('#btnStart').removeClass('disabled')
+            }            
+          },        
+        }
+    });    
+    var dSelect = app.smartSelect.create({
+        closeOnSelect: true,
+        el: '#dSelect',
+        on: {
+            // If there is an onInit event use it to set the Initial values... look at .emit for a custom event
+            close: function (e) {
+            //For some reason the selected value wasn't showing after the initial close.             
+            if (e.valueEl.innerText === '')
+            {
+                e.valueEl.innerText = "5";
+            }
+            if ($('#btnStart').hasClass('disabled'))
+            {
+                $('#btnStart').removeClass('disabled')
+            }            
+            },        
+        }
+    });
     
-      var addOptions = function() {
-        $('#ctgSelect').append('<option value="0" selected>Any Category</option>');
-        $.each(game.ctgBank, function(key,value) {
-            $('#ctgSelect').append('<option value="'+ value.index + '">' + value.title + '</option>');
-        });
+    var addOptions = function() {
+            $('#ctgOptions').append('<option value="0" selected>Any Category</option>');
+            $.each(game.ctgBank, function(key,value) {
+                $('#ctgOptions').append('<option value="'+ value.index + '">' + value.title + '</option>');
+            });
 
-        $('#diffSelect').append('<option value="0" selected>Any Difficulty</option>');
-        $.each(['Easy','Medium','Hard'], function(key, value) {
-            $('#diffSelect').append('<option value="'+ value.toLowerCase() + '">' + value + '</option>');
-        });
+            $('#dOptions').append('<option value="0" selected>Any Difficulty</option>');
+            $.each(['Easy','Medium','Hard'], function(key, value) {
+                $('#dOptions').append('<option value="'+ value.toLowerCase() + '">' + value + '</option>');
+            });
 
-        $.each([5, 10, 15, 20], function(key, value) {
-            $('#qstnCount').append('<option value="'+ value + '">' + value + '</option>');
-        });                
-    };
+            $.each([5, 10, 15, 20], function(key, value) {
+                $('#qOptions').append('<option value="'+ value + '">' + value + '</option>');
+            });         
+            
+            
+        };
 
     $('#btnStart').on('click', function(e){
         var data = app.form.convertToData('#myForm'),
@@ -292,28 +364,29 @@ $(document).ready(function(){
             game.isCorrect(ansText, indx).then(
                 function(data)
                 {
-                    //var msg = `"Correct Answer: ${ansText}", "${(correct) ? 'Correct' : 'Incorrect'} answer selected."`
                     toastr[`${(data.correct) ? 'success' : 'error'}`](`${(data.correct) ? 'Correct' : 'Incorrect'} answer selected.`);
                     
-                    if(data.correct)
-                    {
-                        game.score.right ++;
-                    }
-                    else
-                    {
-                        game.score.wrong ++;
-                    }
+                    (data.correct) ? game.score.right ++ : game.score.wrong ++;
 
                     game.showScore();
-                    
-                    /* game.nextQ(); */
 
-                    game.showAnsSummary(data.indx);
+                    game.showAnsSummary(data.indx).then(
+                        function(show)
+                        {
+                            if(show) setTimeout(function(){game.nextQ();},3000);
+                        }
+                    );
 
                 }
             )
         }        
     });
 
-    addOptions(); 
+    addOptions();
+    
+    app.emit('startUp', [
+                            {obj: qSelect, init: 5},
+                            {obj: ctgSelect, init: 'Any Category'}, 
+                            {obj: dSelect, init: 'Any Difficulty'}
+                        ]);
 });

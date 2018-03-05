@@ -5,6 +5,15 @@ var app = new Framework7({
         closeOnSelect: true,
       }
   });
+
+  app.on('startUp', function (data) {
+      $.each(data, function(key, smartSlct) {
+        if (smartSlct.obj.valueEl.innerHTML === '')
+        {
+            smartSlct.obj.valueEl.innerHTML = smartSlct.init;
+        }
+      })
+  });
   
 var mainView = app.views.create('.view-main');
 

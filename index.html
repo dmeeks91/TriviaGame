@@ -23,9 +23,7 @@
         <div class="view view-main">
             <div class="navbar">
                 <div class="navbar-inner">
-                    <div class="left"></div>
-                    <div class="center sliding" id="navTitle">Trivia Game</div>
-                    <div class="right"></div>
+                    <div id="navTitle">Trivia Game</div>
                 </div>
             </div>
             <div class="pages navbar-through">
@@ -39,8 +37,8 @@
                                         <div class="list-group inset">
                                             <ul> 
                                                 <li>
-                                                    <a class="item-link smart-select" id="qCount">
-                                                        <select name="amount" id='qstnCount'>
+                                                    <a class="item-link smart-select" id="qSelect">
+                                                        <select name="amount" id='qOptions'>
                                                             <!-- dynamically place options with js -->
                                                         </select>
                                                         <div class="item-content">
@@ -51,8 +49,8 @@
                                                     </a>
                                                 </li>                                       
                                                 <li>
-                                                    <a href="#" class="item-link smart-select smart-select-init">
-                                                        <select name="category" id='ctgSelect'>
+                                                    <a class="item-link smart-select" id="ctgSelect">
+                                                        <select name="category" id='ctgOptions'>
                                                             <!-- dynamically place options with js -->
                                                         </select>
                                                         <div class="item-content">
@@ -63,8 +61,8 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="#" class="item-link smart-select smart-select-init">
-                                                        <select name="difficulty" id='diffSelect'>
+                                                    <a class="item-link smart-select" id="dSelect">
+                                                        <select name="difficulty" id='dOptions'>
                                                             <!-- dynamically place options with js -->
                                                         </select>
                                                         <div class="item-content">
