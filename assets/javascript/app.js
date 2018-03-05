@@ -1,10 +1,11 @@
 //randomly generate questions using https://opentdb.com/api_config.php
 $(document).ready(function(){
     var game = {
+            status: 'waiting',
             gTime: 0,
             qIndx: 0,
             qBank: [],
-            qOrder: [],    
+            ansOrder: [],    
             qTime: 0,    
             ctgBank: [
                 {
@@ -33,22 +34,79 @@ $(document).ready(function(){
                     imgSrc: ''
                 },
             ],
-            setUpQ: function() {
-                var Q = this.qBank[this.qIndx],
-                    num;
-                this.qOrder = [];
-                
-                //Randomly generate order to load questions to form
-                do{
-                    num = Math.floor(Math.random() * 4)
-                    if(this.qOrder.indexOf(num) === -1)
-                    {
-                        this.qOrder.push(num);
-                    }
-                }
-                while(this.qOrder.length != 4);
+            setAnsOrder: function() {
+                var self = this;
+                return new Promise(
+                    function(resolve, reject) {
+                        try 
+                        {
+                            var Q = self.qBank[self.qIndx],
+                            num;
+                            self.ansOrder = [];
+                            
+                            //Randomly generate order to load questions to form
+                            do{
+                                num = Math.floor(Math.random() * 4)
+                                if(self.ansOrder.indexOf(num) === -1)
+                                {
+                                    self.ansOrder.push(num);
+                                }
+                            }
+                            while(self.ansOrder.length != 4);
+                        }
+                        catch(e)
+                        {
+                            reject({Error: e});
+                        }
 
-                //Create function to fill question
+                        resolve({qObj : Q, ansOrd : self.ansOrder});
+
+                    });             
+
+
+            },
+            setQDisplay: function(qObj, ansOrd) {
+                $('#qHolder').html(qObj.question);
+                var abc = ['A','B','C','D'],
+                    wrgLen = qObj.incorrect_answers.length,
+                    ansIndx,                    
+                    ansText;    
+                for (var i=0; i<ansOrd.length; i++)
+                {
+                    ansIndx = ansOrd[i];
+                    ansText = (ansIndx === wrgLen) ? 
+                              qObj['correct_answer'] : 
+                              qObj['incorrect_answers'][ansIndx];
+
+                    $(`#ans${i+1}`).html(`${abc[i]}. ${ansText}`);
+                }
+                console.log(qObj);
+                console.log(ansOrd);
+            },
+            nextQ: function() {
+                this.qIndx ++;
+            },
+            showQ: function() {
+                var self = this;
+                self.setAnsOrder().then(
+                    function(data) {
+                        self.setQDisplay(data.qObj, data.ansOrd);
+                });
+            },
+            isCorrect: function(ansText) {
+                var self = this;
+                return new Promise(
+                    function(resolve, reject) {
+                        try 
+                        {
+                            var qObj = self.qBank[self.qIndx];                            
+                            resolve(qObj.correct_answer === ansText);
+                        }
+                        catch(e)
+                        {
+                            reject({Error: e});
+                        }                        
+                    });
             },    
         }
 
@@ -56,6 +114,7 @@ $(document).ready(function(){
         closeOnSelect: true,
         el: '#qCount',
         on: {
+            // If there is an onInit event use it to set the Initial values... look at .emit for a custom event
           close: function (e) {
             //For some reason the selected value wasn't showing after the initial close.             
             if (e.valueEl.innerText === '')
@@ -65,11 +124,10 @@ $(document).ready(function(){
             if ($('#btnStart').hasClass('disabled'))
             {
                 $('#btnStart').removeClass('disabled')
-            }
-          }
+            }            
+          },        
         }
       });
-
     
       var addOptions = function() {
         $('#ctgSelect').append('<option value="0" selected>Any Category</option>');
@@ -104,9 +162,28 @@ $(document).ready(function(){
             $.getJSON(url, 
             function(e){
                 game.qBank = e.results; 
-                //console.log(game.qBank);               
+                game.showQ();
+                $('#qSection').show();
+                $('#slctDtls').hide();             
             });
     });
     
+    $('.ansBtn').on('click', function(e) {
+        if (game.status === 'waiting') //Only allow 1st click to register
+        {
+            game.status = 'selected';
+            var ansText = e.target.innerText.slice(e.target.innerText.indexOf('.') + 2).trim(),
+            thisBtnId = e.target.id;
+
+            game.isCorrect(ansText).then(
+                function(correct)
+                {
+                    console.log(`${(correct) ? 'Correct' : 'Incorrect'} answer selected.`)
+                }
+            )
+        }
+        
+    });
+
     addOptions(); 
 });

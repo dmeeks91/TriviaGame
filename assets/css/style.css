@@ -22,24 +22,37 @@
 #cardDetails {
     margin: auto;
     border-radius: 5px;
+    padding: 2%;
 }
 
 .card-content {
     margin-left: 2%;
 } 
-.oddBtn {
+.evenBtn {
     border: 2px solid #fff;
     border-radius: 25px;
     text-align: center;
     background-color: #2196f3;
     color: #fff !important;
-    font-size: larger !important;
+    font-size: 115% !important;
+    margin-bottom: 2%;
 }
-.evenBtn {
+.oddBtn {
     border: 2px solid #2196f3;
     border-radius: 25px;
     text-align: center;
     background-color: #fff;
-    color: black !important;
-    font-size: larger !important;
+    color: #2196f3 !important;
+    font-size: 115% !important;
+    margin-bottom: 2%;
+}
+
+li .oddBtn:parent, li .evenBtn:parent {
+    margin-bottom: 15px;
+}
+
+#qHolder {
+    text-align: center;
+    font-style: italic;
+    font-size: 135%;
 }
