@@ -2,11 +2,50 @@
 $(document).ready(function(){
     var game = {
             status: 'waiting',
-            gTime: 0,
+            score: {
+                right:0,
+                wrong: 0,
+                timeX: 0,
+            },
+            clock: {
+                interval: null,
+                running: false,
+                time: 30,
+                start: function() {
+                    if(!game.clock.running)
+                    {
+                        game.clock.interval = setInterval(game.clock.tick, 1000);
+                        game.clock.running = true;
+                    }
+                },
+                stop: function() {
+                    clearInterval(game.clock.interval);
+                    game.clock.running = false;
+                },
+                tick: function() {
+                    if (game.clock.time > 0)
+                    {
+                        game.clock.time--;
+                        var num = game.clock.time;
+                        num = (parseInt(num)<10) ? '0' + num : num;
+                        $('#timeDiv').text(`:${num}`);
+                    }
+                    else
+                    {
+                        clearInterval(game.clock.interval);
+                        game.clock.running = false;
+                        toastr['error']("TIME UP!");
+                    }
+                    
+                },  
+                reset: function() {
+                    game.clock.time = 30;
+                    $('#timeDiv').text(':30');
+                } 
+            },        
             qIndx: 0,
             qBank: [],
-            ansOrder: [],    
-            qTime: 0,    
+            ansOrder: [],     
             ctgBank: [
                 {
                     title: 'Art',
@@ -65,6 +104,9 @@ $(document).ready(function(){
 
 
             },
+            showAnsSummary: function() {
+
+            },
             setQDisplay: function(qObj, ansOrd) {
                 $('#qHolder').html(qObj.question);
                 var abc = ['A','B','C','D'],
@@ -80,11 +122,18 @@ $(document).ready(function(){
 
                     $(`#ans${i+1}`).html(`${abc[i]}. ${ansText}`);
                 }
+                game.status = 'waiting';
+                game.clock.start();
                 console.log(qObj);
                 console.log(ansOrd);
             },
             nextQ: function() {
                 this.qIndx ++;
+                if(this.qIndx < this.qBank.length)
+                {
+                    this.showQ();
+                    this.clock.reset();
+                }
             },
             showQ: function() {
                 var self = this;
@@ -93,22 +142,49 @@ $(document).ready(function(){
                         self.setQDisplay(data.qObj, data.ansOrd);
                 });
             },
-            isCorrect: function(ansText) {
+            showScore: function() {
+                var name;
+                for(var type in this.score)
+                {
+                    val = this.score[type];
+                    $(`#${type}`).text(val);
+                }
+            },            
+            isCorrect: function(ansText, btn) {
                 var self = this;
                 return new Promise(
                     function(resolve, reject) {
                         try 
                         {
                             var qObj = self.qBank[self.qIndx];                            
-                            resolve(qObj.correct_answer === ansText);
+                            resolve({correct: (qObj.correct_answer === ansText), obj: btn});
                         }
                         catch(e)
                         {
                             reject({Error: e});
                         }                        
                     });
-            },    
-        }
+            },
+               
+        };
+
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-bottom-center",
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "2500",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          };
 
     var qSelect = app.smartSelect.create({
         closeOnSelect: true,
@@ -164,25 +240,41 @@ $(document).ready(function(){
                 game.qBank = e.results; 
                 game.showQ();
                 $('#qSection').show();
-                $('#slctDtls').hide();             
+                $('#slctDtls').hide();  
+                $('#timeANDsum').show();           
             });
     });
     
     $('.ansBtn').on('click', function(e) {
         if (game.status === 'waiting') //Only allow 1st click to register
         {
+            game.clock.stop();
             game.status = 'selected';
             var ansText = e.target.innerText.slice(e.target.innerText.indexOf('.') + 2).trim(),
-            thisBtnId = e.target.id;
+                $btn = `$('#${e.target.id}')`;
 
-            game.isCorrect(ansText).then(
-                function(correct)
+            game.isCorrect(ansText, $btn).then(
+                function(data)
                 {
-                    console.log(`${(correct) ? 'Correct' : 'Incorrect'} answer selected.`)
+                    //var msg = `"Correct Answer: ${ansText}", "${(correct) ? 'Correct' : 'Incorrect'} answer selected."`
+                    toastr[`${(data.correct) ? 'success' : 'error'}`](`${(data.correct) ? 'Correct' : 'Incorrect'} answer selected.`);
+                    
+                    if(data.correct)
+                    {
+                        game.score.right ++;
+                    }
+                    else
+                    {
+                        game.score.wrong ++;
+                    }
+
+                    game.showScore();
+                    
+                    game.nextQ();
+
                 }
             )
-        }
-        
+        }        
     });
 
     addOptions(); 

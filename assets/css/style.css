@@ -47,12 +47,73 @@
     margin-bottom: 2%;
 }
 
+.ansBtn:hover{
+    background-color: lightblue;
+    font-weight: bold;
+}
+
 li .oddBtn:parent, li .evenBtn:parent {
     margin-bottom: 15px;
+}
+
+.secTime {
+    height: 144px;
+    vertical-align: middle;
+}
+
+#timeDiv {
+    width: 100%;
+    text-align: center;
+    padding: 0px;
+    margin: 0px;
+    font-size: 500%;
+}
+
+#timerDiv {
+    width: 85%;
+    margin: auto;
+    margin-top: 6%;
+    box-shadow: 0 1px 3px rgb(33, 150, 243), 0 1px 2px rgb(33, 150, 243);
+}
+
+#timerContent {
+    margin-left: 2%;
+    margin-right: 10%;
+    padding-bottom: 5%;
 }
 
 #qHolder {
     text-align: center;
     font-style: italic;
     font-size: 135%;
+}
+
+#sBtnHolder {
+    padding-top: 15px;
+}
+.toast-success {
+    width: 80% !important;
+    margin: 0px !important;
+    left: 10% !important;
+    background-color: #31c731c2 !important;
+}
+
+.toast-error {
+    width: 80% !important;
+    margin: 0px !important;
+    left: 10% !important;
+    background-color: #ab312a !important;
+}
+
+#toast-container {
+    top: 50% !important;
+}
+
+p {
+    font-weight: bold;
+    font-size: 115%;
+}
+
+.f7-icons {
+    color: #2196f3;
 }

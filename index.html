@@ -12,8 +12,10 @@
     <!-- Your app title -->
     <title>Trivia game</title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    
     <link rel="stylesheet" href="assets/css/framework7.min.css">
+    <link rel="stylesheet" href="assets/css/framework7-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
   </head>
   <body>
@@ -76,7 +78,7 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="card-footer">
+                                <div class="card-footer no-hairlines" id="sBtnHolder">
                                     <button class="col button button-fill button-round disabled" 
                                         id="btnStart">Start Game</button>
                                 </div>
@@ -103,6 +105,62 @@
                                         </ul>
                                     </div>
                                 </div>  
+                            </div>                            
+                        </div>
+                        <div class="container" id="timeANDsum" hidden>                        
+                            <div class="card" id="timerDiv">
+                                <div class="card-content" id="timerContent">                                                                      
+                                    <div class="row">
+                                        <p>Time Remaing:</p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-100 tablet-50">                                        
+                                            <div class="list no-hairlines no-hairlines-between">
+                                                <ul>
+                                                    
+                                                    <li>
+                                                        <div class='item-content'>                                                        
+                                                            <h1 id='timeDiv'>:30</h1>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-100 tablet-50">
+                                            <div class="list">
+                                                <ul>
+                                                    <li>
+                                                        <div class="item-content">
+                                                            <div class="item-media"><i class="f7-icons">check_round_fill</i></div>
+                                                            <div class="item-inner">
+                                                                <div class="item-title">Correct Answers</div>
+                                                                <div class="item-after" id="right">0</div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="item-content">
+                                                            <div class="item-media"><i class="f7-icons">close_round_fill</i></div>
+                                                            <div class="item-inner">
+                                                                <div class="item-title">Incorrect Answers</div>
+                                                                <div class="item-after" id="wrong">0</div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="item-content">
+                                                            <div class="item-media"><i class="f7-icons">time_fill</i></div>
+                                                            <div class="item-inner">
+                                                                <div class="item-title">Unanswered</div>
+                                                                <div class="item-after" id="timeX">0</div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>    
+                                </div>  
                             </div>
                         </div>
                     </div>
@@ -110,7 +168,23 @@
             </div>
         </div>
     </div>
+    <div class="sheet-modal my-sheet">
+        <div class="toolbar">
+            <div class="toolbar-inner">
+            <div class="left"></div>
+            <div class="center" id='modalTitle'></div>
+            <div class="right"><!-- <a class="link sheet-close" href="#">Done</a> --></div>
+            </div>
+        </div>
+        <div class="sheet-modal-inner">
+            <div class="block">
+            <h4>Info</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.</p>
+            </div>
+        </div>
+    </div>
     <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script type="text/javascript" src="assets/javascript/framework7.min.js"></script>
     <script type="text/javascript" src="assets/javascript/app.js"></script>
     <script type="text/javascript" src="assets/javascript/config.js"></script>
