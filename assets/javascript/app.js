@@ -190,8 +190,6 @@ $(document).ready(function(){
             }
             game.status = 'waiting';
             game.clock.start();
-            //console.log(qObj);
-            //console.log(ansOrd);
         },
         nextQ: function() {
             this.qIndx ++;
@@ -268,25 +266,26 @@ $(document).ready(function(){
             switch (type)
             {
                 case 'setDetails':
+                    $('#newGame').hide();
                     $('#qSection').hide();
                     $('#slctDtls').show();  
                     $('#timeANDsum').hide();
-                    $('#timeDiv').hide();
-                    $('#newGame').hide();
+                    $('#timeDiv').hide();                    
                     break;
                 case 'playGame':
+                    $('#newGame').hide();
                     $('#qSection').show();
                     $('#slctDtls').hide();  
                     $('#timeANDsum').show();
                     $('#timeDiv').show();
-                    $('#newGame').hide();
+                    
                     break;
                 case 'gameOver':
+                    $('#newGame').show();
                     $('#qSection').hide();
                     $('#slctDtls').hide();  
                     $('#timeANDsum').show();
-                    $('#timeDiv').hide();
-                    $('#newGame').show();
+                    $('#timeDiv').hide();                    
                     break;
                 
             }
