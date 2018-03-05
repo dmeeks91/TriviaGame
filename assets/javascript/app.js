@@ -104,13 +104,47 @@ $(document).ready(function(){
 
 
             },
-            showAnsSummary: function() {
-
+            setAnsBtnColor: function(id, type) {
+                $.each(['correct', 'incorrect', 'default', 'unselected'],
+                    function(key, value)
+                    {
+                        if (type === value)
+                        {
+                            $(id).addClass(type);
+                        }
+                        else
+                        {
+                            $(id).removeClass(value);
+                        }
+                    });
+            },
+            showAnsSummary: function(indx) {
+                var correct,
+                    slctd;
+                for(var i=0; i < this.ansOrder.length; i++)
+                {
+                    slctd = (indx === i);
+                    correct = (this.ansOrder[i] === 3);
+                    if (correct)
+                    {
+                        this.setAnsBtnColor(`#ans${i + 1}`,'correct');
+                    }
+                    else if (slctd)
+                    {
+                        this.setAnsBtnColor(`#ans${indx + 1}`,'incorrect');
+                    }
+                    else
+                    {
+                        this.setAnsBtnColor(`#ans${i + 1}`,'unselected');
+                    }
+                }
             },
             setQDisplay: function(qObj, ansOrd) {
                 $('#qHolder').html(qObj.question);
+                $('#qSum').html(`Question ${this.qIndx + 1} of ${this.qBank.length}   Category: ${qObj.category}`);
                 var abc = ['A','B','C','D'],
                     wrgLen = qObj.incorrect_answers.length,
+                    ansId,
                     ansIndx,                    
                     ansText;    
                 for (var i=0; i<ansOrd.length; i++)
@@ -119,8 +153,9 @@ $(document).ready(function(){
                     ansText = (ansIndx === wrgLen) ? 
                               qObj['correct_answer'] : 
                               qObj['incorrect_answers'][ansIndx];
-
-                    $(`#ans${i+1}`).html(`${abc[i]}. ${ansText}`);
+                    ansId = `#ans${i+1}`;
+                    $(ansId).html(`${abc[i]}. ${ansText}`);
+                    game.setAnsBtnColor(ansId, 'default');
                 }
                 game.status = 'waiting';
                 game.clock.start();
@@ -150,14 +185,14 @@ $(document).ready(function(){
                     $(`#${type}`).text(val);
                 }
             },            
-            isCorrect: function(ansText, btn) {
+            isCorrect: function(ansText, i) {
                 var self = this;
                 return new Promise(
                     function(resolve, reject) {
                         try 
                         {
                             var qObj = self.qBank[self.qIndx];                            
-                            resolve({correct: (qObj.correct_answer === ansText), obj: btn});
+                            resolve({correct: (qObj.correct_answer === ansText), indx: i});
                         }
                         catch(e)
                         {
@@ -251,9 +286,10 @@ $(document).ready(function(){
             game.clock.stop();
             game.status = 'selected';
             var ansText = e.target.innerText.slice(e.target.innerText.indexOf('.') + 2).trim(),
-                $btn = `$('#${e.target.id}')`;
+                indx = parseInt(e.target.id.slice(e.target.id.indexOf('s')+1).trim()) - 1,
+                $btn = e.target.id;
 
-            game.isCorrect(ansText, $btn).then(
+            game.isCorrect(ansText, indx).then(
                 function(data)
                 {
                     //var msg = `"Correct Answer: ${ansText}", "${(correct) ? 'Correct' : 'Incorrect'} answer selected."`
@@ -270,7 +306,9 @@ $(document).ready(function(){
 
                     game.showScore();
                     
-                    game.nextQ();
+                    /* game.nextQ(); */
+
+                    game.showAnsSummary(data.indx);
 
                 }
             )

@@ -47,7 +47,7 @@
     margin-bottom: 2%;
 }
 
-.ansBtn:hover{
+.ansBtn.default:hover{
     background-color: lightblue;
     font-weight: bold;
 }
@@ -103,6 +103,24 @@ li .oddBtn:parent, li .evenBtn:parent {
     margin: 0px !important;
     left: 10% !important;
     background-color: #ab312a !important;
+}
+
+.incorrect {
+    background-color: #ef514887;
+    border-color: #f11307;
+    color: #f11307 !important;
+    box-shadow: 2.5px 5px 4px #de6d5e;
+}
+
+.correct {
+    background-color: #14de2a8c;
+    border-color: #299829;
+    color: #299829 !important;
+    box-shadow: 2.5px 5px 4px #5b8660;
+}
+
+.unselected {
+    opacity: .2;
 }
 
 #toast-container {
