@@ -256,6 +256,8 @@ $(document).ready(function(){
                 $('#qOptions').append('<option value="'+ value + '">' + value + '</option>');
             });
 
+            this.newGame();
+
             app.emit('initSmartSelect', [
                 {obj: qSelect, init: 5},
                 {obj: ctgSelect, init: 'Any Category'}, 
@@ -296,6 +298,7 @@ $(document).ready(function(){
             this.score.right = 0;
             this.score.wrong = 0;
             this.score.timeX = 0;
+            this.showScore();
             $('#sumTitle').text('Time Remaing:');
             this.hideShowSections('setDetails');
         }
