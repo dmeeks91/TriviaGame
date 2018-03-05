@@ -92,16 +92,16 @@ li .oddBtn:parent, li .evenBtn:parent {
     padding-top: 15px;
 }
 .toast-success {
-    width: 80% !important;
-    margin: 0px !important;
-    left: 10% !important;
+    width: 100% !important;
+    margin: auto !important;
+    left: .25% !important;
     background-color: #31c731c2 !important;
 }
 
 .toast-error {
-    width: 80% !important;
-    margin: 0px !important;
-    left: 10% !important;
+    width: 100% !important;
+    margin: auto !important;
+    left: .25% !important;
     background-color: #ab312a !important;
 }
 
@@ -125,6 +125,16 @@ li .oddBtn:parent, li .evenBtn:parent {
 
 #toast-container {
     top: 50% !important;
+    width: 100%;
+    margin: auto;
+}
+
+#newGame {
+    margin: auto;
+    margin-top: 10%;
+    font-size: 250% !important;
+    padding: 5% 10% 5% 10%;
+    box-shadow: 2.5px 5px 4px #20384a;
 }
 
 p {

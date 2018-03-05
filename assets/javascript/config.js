@@ -6,7 +6,7 @@ var app = new Framework7({
       }
   });
 
-  app.on('startUp', function (data) {
+  app.on('initSmartSelect', function (data) {
       $.each(data, function(key, smartSlct) {
         if (smartSlct.obj.valueEl.innerHTML === '')
         {
