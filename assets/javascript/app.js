@@ -190,6 +190,8 @@ $(document).ready(function(){
             }
             game.status = 'waiting';
             game.clock.start();
+
+            console.log(ansOrd)
         },
         nextQ: function() {
             this.qIndx ++;
